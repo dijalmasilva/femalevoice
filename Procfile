@@ -1,0 +1,1 @@
+web: java -Dserver.port=$PORT -Dspring.profiles.active=pro -jar BM-Web/target/BM-Web-1.0-SNAPSHOT.war
