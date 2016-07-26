@@ -5,7 +5,11 @@
  */
 package dijalmasilva.core.service;
 
+import dijalmasilva.entidades.Lugar;
 import dijalmasilva.entidades.Usuario;
+import dijalmasilva.enums.TipoDaOcorrencia;
+import java.time.LocalDate;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,15 +17,17 @@ import org.springframework.stereotype.Service;
  * @author dijalma
  */
 @Service
-public interface UsuarioService {
+public interface LugarService {
     
-    Usuario salvar(Usuario u);
+    Lugar salvar(Lugar l, Usuario u);
     
     void remover(Long id);
     
-    void remover(Usuario u);
+    Lugar buscar(Long id);
     
-    Usuario atualizar(Usuario u);
+    List<Lugar> buscarTodos();
     
-    Usuario login(String login, String password);
+    List<Lugar> buscarPorData(LocalDate data);
+    
+    List<Lugar> buscarPorTipo(TipoDaOcorrencia tipo);
 }

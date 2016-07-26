@@ -28,7 +28,18 @@ if (navigator.geolocation) {
         // ajusta a posição do marker para a localização do usuário
         marker.setPosition(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
         map.setCenter(marker.getPosition());
+        console.log(marker.getPosition().lat());
+        console.log(marker.getPosition().lng());
         map.setZoom(16);
+        geocoder.geocode({'latLng': marker.getPosition()}, function (results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {
+                if (results[0]) {
+                    $('.address').val(results[0].formatted_address);
+                    $('#txtLatitude').val(marker.getPosition().lat());
+                    $('#txtLongitude').val(marker.getPosition().lng());
+                }
+            }
+        });
     },
             function (error) { // callback de erro
                 alert('Erro ao obter localização!');
@@ -46,7 +57,7 @@ $(document).ready(function () {
         geocoder.geocode({'latLng': marker.getPosition()}, function (results, status) {
             if (status === google.maps.GeocoderStatus.OK) {
                 if (results[0]) {
-                    $('#address').val(results[0].formatted_address);
+                    $('.address').val(results[0].formatted_address);
                     $('#txtLatitude').val(marker.getPosition().lat());
                     $('#txtLongitude').val(marker.getPosition().lng());
                 }
@@ -54,7 +65,7 @@ $(document).ready(function () {
         });
     });
 
-    $("#address").autocomplete({
+    $(".address").autocomplete({
         source: function (request, response) {
             $('option').remove();
             geocoder.geocode({'address': request.term + ', Brasil', 'region': 'BR'}, function (results, status) {
@@ -78,18 +89,24 @@ $(document).ready(function () {
             map.setZoom(16);
         }
     });
+
+    $('.setPlaces').trigger('click');
 });
 
 function carregarNoMapa() {
-    var endereco = $('#address').val();
-    console.log(endereco);
+    var endereco = $('.address').val();
+    carregaLocalizacaoNoEndereco(endereco);
+}
+
+
+function carregaLocalizacaoNoEndereco(endereco) {
     geocoder.geocode({'address': endereco + ', Brasil', 'region': 'BR'}, function (results, status) {
         if (status === google.maps.GeocoderStatus.OK) {
             if (results[0]) {
                 var latitude = results[0].geometry.location.lat();
                 var longitude = results[0].geometry.location.lng();
 
-                $('#address').val(results[0].formatted_address);
+                $('.address').val(results[0].formatted_address);
                 $('#txtLatitude').val(latitude);
                 $('#txtLongitude').val(longitude);
 
@@ -101,9 +118,57 @@ function carregarNoMapa() {
         }
     });
 }
-;
 
 function carregaAutoComplete(item) {
     console.log(item.formatted_address);
     $('#enderecos').append("<option>" + item.formatted_address + "</optioin>");
+}
+
+
+var imagens = {
+    assedio: "/assets/icons/assedio.png",
+    estupro: "/assets/icons/estupro.png",
+    agressao: "/assets/icons/agressao.png"
+};
+
+var marcadores = [];
+var criaMarcador = function (marcador, mapa) {
+    var posicao = new google.maps.LatLng(marcador.latitude, marcador.longitude);
+    var opcoes = {
+        position: posicao
+        , title: marcador.titulo
+        , animation: google.maps.Animation.DROP
+        , icon: {
+            url: marcador.imagem || 'http://i.imgur.com/eNAvIvr.png'
+            , scaledSize: new google.maps.Size(50, 50)
+        }
+        , map: mapa
+    };
+    var novoMarcador = new google.maps.Marker(opcoes);
+    marcadores.push(novoMarcador);
+//    map.setCenter(novoMarcador.position)
+};
+
+function adiciona(lat, long, descricao, tipo, idLugar) {
+    console.log("Imprimindo " + idLugar + ":" + lat, long, descricao, tipo, idLugar);
+    var marcador = {
+        latitude: lat
+        , longitude: long
+        , id: idLugar
+        , titulo: descricao
+        , imagem: verificaTipoImagem(tipo)
+    };
+    criaMarcador(marcador, map);
+}
+
+function verificaTipoImagem(tipo) {
+    var teste = tipo.toLowerCase();
+    console.log(teste.localeCompare('agressao'));
+    if (teste.localeCompare('agressao')){
+        return imagens.agressao;
+    } else if (teste.localeCompare("assedio")) {
+        return imagens.assedio;
+    } else {
+        return imagens.estupro;
+    }
 }

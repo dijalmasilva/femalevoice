@@ -28,13 +28,13 @@ header {
 #header_functions {
     float: right;
     padding: 20px;
-    margin-top: 30px;
+    margin-top: 25px;
 }
 
 .body-new-location {
     position: fixed;
     left: 10px;
-    top: 2240px;
+    top: 240px;
     z-index: 3;
 }
 
@@ -107,4 +107,21 @@ header {
     z-index: 7;
     top: 80px;
     left: 500px;
+}
+
+.modal-ocorrencia{
+    height: 520px !important;
+    text-align: left !important;
+}
+
+.modal-ocorrencia .modal-title {
+    text-align: center !important;
+}
+
+textarea {
+    resize: none;
+}
+
+.invisivel {
+    display: none;
 }

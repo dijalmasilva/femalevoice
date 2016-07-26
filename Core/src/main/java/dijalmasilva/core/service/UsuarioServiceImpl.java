@@ -15,7 +15,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Inject
     private UsuarioRepository dao;
-    
+
     @Override
     public Usuario salvar(Usuario u) {
         return dao.save(u);
@@ -35,5 +35,34 @@ public class UsuarioServiceImpl implements UsuarioService {
     public Usuario atualizar(Usuario u) {
         return dao.save(u);
     }
+
+    @Override
+    public Usuario login(String login, String password) {
+        if (login.contains("@")){
+            return loginByEmail(login, password);
+        }
+        
+        return loginByUsername(login, password);
+    }
+
+    private Usuario loginByEmail(String email, String password) {
+        Usuario user = dao.findByEmail(email);
+
+        if (user != null && user.getPassword().equals(password)) {
+            return user;
+        }
+
+        return null;
+    }
     
+    private Usuario loginByUsername(String username, String password) {
+        Usuario user = dao.findByUsername(username);
+
+        if (user != null && user.getPassword().equals(password)) {
+            return user;
+        }
+
+        return null;
+    }
+
 }

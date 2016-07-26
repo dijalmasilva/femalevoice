@@ -11,5 +11,5 @@ package dijalmasilva.enums;
  */
 public enum TipoDaOcorrencia {
 
-    ASSÉDIO, ESTUPRO, AGRESSÃO;
+    ASSEDIO, ESTUPRO, AGRESSAO;
 }

@@ -5,7 +5,10 @@
  */
 package dijalmasilva.core.repository;
 
-import dijalmasilva.entidades.Usuario;
+import dijalmasilva.entidades.Lugar;
+import dijalmasilva.enums.TipoDaOcorrencia;
+import java.time.LocalDate;
+import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,9 +17,9 @@ import org.springframework.stereotype.Repository;
  * @author dijalma
  */
 @Repository
-public interface UsuarioRepository extends CrudRepository<Usuario, Long>{
+public interface LugarRepository extends CrudRepository<Lugar, Long>{
+ 
+    List<Lugar> findByData(LocalDate data);
     
-    Usuario findByEmail(String email);
-    
-    Usuario findByUsername(String username);
+    List<Lugar> findByTipo(TipoDaOcorrencia tipo);
 }

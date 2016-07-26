@@ -5,7 +5,12 @@
  */
 package dijalmasilva.controllers;
 
+import dijalmasilva.core.service.LugarService;
+import dijalmasilva.entidades.Lugar;
 import java.io.IOException;
+import java.util.List;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,13 +22,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class Session {
     
+    @Inject
+    private LugarService lugarService;
+    
     @RequestMapping("/")
     public void index(HttpServletResponse resp) throws IOException{
         resp.sendRedirect("/home");
     }
     
     @RequestMapping("/home")
-    public String home(){
+    public String home(HttpServletRequest req){
+        List<Lugar> todasOcorrencias = lugarService.buscarTodos();
+        req.getServletContext().setAttribute("todasOcorrencias", todasOcorrencias);
         return "home";
     }
 }

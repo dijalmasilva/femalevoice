@@ -6,7 +6,11 @@
 $(document).ready(function () {
     
     $('.modal-dark').click(function () {
-        cancelarCadastro();
+        cancelar();
+    });
+    
+    $('.setPlaces').trigger('click', function (){
+        console.log('lançou o evento');
     });
 });
 
@@ -20,14 +24,25 @@ function login() {
     $('#modal-login').fadeIn(1000);
 }
 
-function mostrarAnimacoesModal(){
-    $('.modal-event').removeClass('animated bounceOutUp');
-    $('.modal-event').addClass('animated tada');
+function novaDenuncia(){
+    mostrarAnimacoesModal();
+    $('#modal-denuncia').fadeIn(1000);
 }
 
-function cancelarCadastro() {
+function mostrarAnimacoesModal(){
+    $('.modal-event').removeClass('animated bounceOutUp');
+    $('.modal-event').addClass('animated pulse');
+}
+
+function cancelar() {
     $('.modal-event').removeClass('animated tada');
     $('.modal-event').addClass('animated bounceOutUp');
     $('.modal-dijalma').delay(500);
     $('.modal-dijalma').fadeOut(200);
+}
+
+function logout(){
+    $.ajax({
+        url: "/user/logout"
+    });
 }
