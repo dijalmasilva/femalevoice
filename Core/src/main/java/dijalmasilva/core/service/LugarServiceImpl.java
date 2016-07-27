@@ -19,10 +19,14 @@ public class LugarServiceImpl implements LugarService {
 
     @Inject
     private LugarRepository dao;
-    
+
     @Override
     public Lugar salvar(Lugar l, Usuario u) {
-        l.setUsuario(u);
+        if (l.isAnonima()) {
+            l.setUsuario(null);
+        } else {
+            l.setUsuario(u);
+        }
         return dao.save(l);
     }
 
@@ -50,5 +54,5 @@ public class LugarServiceImpl implements LugarService {
     public List<Lugar> buscarPorTipo(TipoDaOcorrencia tipo) {
         return dao.findByTipo(tipo);
     }
-    
+
 }

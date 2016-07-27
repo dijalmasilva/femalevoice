@@ -1,6 +1,7 @@
 var geocoder;
 var map;
 var marker;
+var heatmap;
 
 function initialize() {
     var latlng = new google.maps.LatLng(-18.8800397, -47.05878999999999);
@@ -20,6 +21,11 @@ function initialize() {
     });
 
     marker.setPosition(latlng);
+
+    heatmap = new google.maps.visualization.HeatmapLayer({
+        data: pointsHeat,
+        map: map
+    });
 }
 
 // verifica se o navegador tem suporte a geolocalização
@@ -28,9 +34,7 @@ if (navigator.geolocation) {
         // ajusta a posição do marker para a localização do usuário
         marker.setPosition(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
         map.setCenter(marker.getPosition());
-        console.log(marker.getPosition().lat());
-        console.log(marker.getPosition().lng());
-        map.setZoom(16);
+        map.setZoom(14);
         geocoder.geocode({'latLng': marker.getPosition()}, function (results, status) {
             if (status === google.maps.GeocoderStatus.OK) {
                 if (results[0]) {
@@ -91,6 +95,7 @@ $(document).ready(function () {
     });
 
     $('.setPlaces').trigger('click');
+    $('#mapaQuente').trigger('click');
 });
 
 function carregarNoMapa() {
@@ -120,7 +125,6 @@ function carregaLocalizacaoNoEndereco(endereco) {
 }
 
 function carregaAutoComplete(item) {
-    console.log(item.formatted_address);
     $('#enderecos').append("<option>" + item.formatted_address + "</optioin>");
 }
 
@@ -149,26 +153,62 @@ var criaMarcador = function (marcador, mapa) {
 //    map.setCenter(novoMarcador.position)
 };
 
-function adiciona(lat, long, descricao, tipo, idLugar) {
-    console.log("Imprimindo " + idLugar + ":" + lat, long, descricao, tipo, idLugar);
+function adicionaMarkers(lat, long, descricao, tipo, idLugar) {
     var marcador = {
         latitude: lat
         , longitude: long
         , id: idLugar
-        , titulo: descricao
+        , titulo: descricao + "; Ocorrência - " + tipo
         , imagem: verificaTipoImagem(tipo)
     };
+    addPoint(lat, long);
     criaMarcador(marcador, map);
 }
 
+var pointsHeat = [];
+
+function addPoint(lat, long) {
+    var point = new google.maps.LatLng(lat, long);
+    pointsHeat.push(point);
+}
+
+
 function verificaTipoImagem(tipo) {
-    var teste = tipo.toLowerCase();
-    console.log(teste.localeCompare('agressao'));
-    if (teste.localeCompare('agressao')){
+    tipo = tipo.toLowerCase();
+    if (tipo.localeCompare('agressao') === 0) {
         return imagens.agressao;
-    } else if (teste.localeCompare("assedio")) {
+    }
+    if (tipo.localeCompare('assedio') === 0) {
         return imagens.assedio;
-    } else {
+    }
+    if (tipo.localeCompare('estupro') === 0) {
         return imagens.estupro;
     }
+}
+
+
+function toggleHeatmap() {
+    if (heatmap.getMap()) {
+        showMarkers();
+    } else {
+        clearMarkers();
+    }
+    heatmap.setMap(heatmap.getMap() ? null : map);
+}
+
+// Sets the map on all markers in the array.
+function setMapOnAll(map) {
+    for (var i = 0; i < marcadores.length; i++) {
+        marcadores[i].setMap(map);
+    }
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+    setMapOnAll(null);
+}
+
+// Shows any markers currently in the array.
+function showMarkers() {
+    setMapOnAll(map);
 }

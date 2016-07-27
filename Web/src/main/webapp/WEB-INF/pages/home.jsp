@@ -50,22 +50,67 @@
                 </div>
             </div>
         </c:if>
-        <c:if test="${usuarioLogado != null}">
-            <div class="body-new-location">
+        <div class="body-funcionts">
+            <c:if test="${usuarioLogado != null}">
                 <button class="btn btn-success btn-sm" onclick="novaDenuncia()">Novo denúncia</button>
+            </c:if>
+            <button class="btn btn-warning btn-sm" onclick="toggleHeatmap()" id="mapaQuente">Mapa de calor</button>
+            <br><br>
+            <div class="filtros">
+                <div class="modal-title">
+                    <h4>Filtrar por agressão</h4>
+                    <br>
+                    <div align="left">
+                        <form action="/lugar/filtrar/tipo" method="POST" class="form-group-sm">
+                            <div class="form-group-sm">
+                                <select name="tipoFiltro" class="form-control">
+                                    <option value="AGRESSAO">Agressão</option>
+                                    <option value="ASSEDIO">Assédio</option>
+                                    <option value="ESTUPRO">Estupro</option>
+                                </select>
+                                <br>
+                                <div align="right">
+                                    <input class="btn btn-sm btn-success" type="submit" value="Buscar"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </c:if>
+        </div>
         <div class="body-address">
             <form class="form-group" onsubmit="carregarNoMapa()" action="#">
                 <div class="form-group-sm">
                     <input class="form-control address" type="text" placeholder="Busque um endereço" list="enderecos" autocomplete="on" autofocus=""/>
                     <datalist id="enderecos" >
                     </datalist>
-                    <!--                        <div align="right">
-                                                <input class="btn btn-default btn-sm" type="button" value="Buscar" onclick="carregarNoMapa()"/>
-                                            </div>-->
                 </div>
             </form>
+            <div align="right">
+                <div class="filtros">
+                    <div class="modal-title">
+                        <h4>Filtrar por data</h4>
+                        <br>
+                        <div align="left">
+                            <form action="/lugar/filtrar/data" method="POST" class="form-group-sm">
+                                <div class="form-group-sm">
+                                    <input class="form-control" type="date" name="dataFiltro"/>
+                                    <br>
+                                    <div align="right">
+                                        <input class="btn btn-sm btn-success" type="submit" value="Buscar"/>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <c:if test="${existeFiltro}">
+                    <form action="/lugar/noFilter" method="GET">
+                        <input class="btn btn-sm btn-danger" type="submit" value="Remover filtro de busca">
+                    </form>
+                </c:if>
+            </div>
         </div>
         <div class="modal-dijalma" id="modal-cadastro">
             <div class="modal-dark"></div>
@@ -164,9 +209,9 @@
             </div>
         </div>
         <c:forEach items="${todasOcorrencias}" var="ocorrencia">
-            <button class="setPlaces invisivel" onclick="adiciona(${ocorrencia.latitude()}, ${ocorrencia.longitude()}, '${ocorrencia.descricao}', '${ocorrencia.tipo}', ${ocorrencia.id})"></button>
+            <button class="setPlaces invisivel" onclick="adicionaMarkers(${ocorrencia.latitude()}, ${ocorrencia.longitude()}, '${ocorrencia.descricao}', '${ocorrencia.tipo}', ${ocorrencia.id})"></button>
         </c:forEach>
         <div id="map"></div>
-        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBNTOq4iU64jIv0QVDx4KLHR-L51XWCQMo&amp;"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNTOq4iU64jIv0QVDx4KLHR-L51XWCQMo&v=3.exp&libraries=visualization"></script>
     </body>
 </html>

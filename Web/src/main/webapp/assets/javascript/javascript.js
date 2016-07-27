@@ -8,10 +8,6 @@ $(document).ready(function () {
     $('.modal-dark').click(function () {
         cancelar();
     });
-    
-    $('.setPlaces').trigger('click', function (){
-        console.log('lançou o evento');
-    });
 });
 
 function cadastrar() {
@@ -39,10 +35,4 @@ function cancelar() {
     $('.modal-event').addClass('animated bounceOutUp');
     $('.modal-dijalma').delay(500);
     $('.modal-dijalma').fadeOut(200);
-}
-
-function logout(){
-    $.ajax({
-        url: "/user/logout"
-    });
 }
